@@ -1,4 +1,4 @@
-module github.com/timokoenig/go-event-system
+module github.com/timokoenig/go-eventsystem
 
 go 1.16
 

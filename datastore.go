@@ -1,4 +1,4 @@
-package main
+package eventsystem
 
 type Datastore interface {
 	// Save event in datastore
