@@ -12,14 +12,14 @@ type EventHandler struct {
 	Handler HandlerFunc
 }
 
-type eventSystem struct {
+type EventSystem struct {
 	handlers  []EventHandler
 	datastore Datastore
 	enableLog bool
 }
 
-func NewEventSystem(datastore Datastore, enableLog bool) *eventSystem {
-	return &eventSystem{
+func NewEventSystem(datastore Datastore, enableLog bool) *EventSystem {
+	return &EventSystem{
 		handlers:  []EventHandler{},
 		datastore: datastore,
 		enableLog: enableLog,
@@ -27,13 +27,13 @@ func NewEventSystem(datastore Datastore, enableLog bool) *eventSystem {
 }
 
 // Register new event handler
-func (e *eventSystem) Register(handler EventHandler) {
+func (e *EventSystem) Register(handler EventHandler) {
 	e.log(fmt.Sprintf("EventSystem.Register handler for %s\n", handler.Event))
 	e.handlers = append(e.handlers, handler)
 }
 
 // Publish event with payload
-func (e *eventSystem) Publish(event string, payload interface{}) error {
+func (e *EventSystem) Publish(event string, payload interface{}) error {
 	e.log(fmt.Sprintf("EventSystem.Publish event for %s\n", event))
 	err := e.datastore.SaveEvent(&Event{
 		ID:          "",
@@ -51,7 +51,7 @@ func (e *eventSystem) Publish(event string, payload interface{}) error {
 }
 
 // onPublish will run the next event that has not started yet
-func (e *eventSystem) onPublish() {
+func (e *EventSystem) onPublish() {
 	event, err := e.datastore.GetEvent()
 	if err != nil {
 		e.log(fmt.Sprintf("Failed to get event; %s", err.Error()))
@@ -97,7 +97,7 @@ func (e *eventSystem) onPublish() {
 }
 
 // Restart all unfinished events
-func (e *eventSystem) Restart() {
+func (e *EventSystem) Restart() {
 	e.log("EventSystem.Restart")
 	event, err := e.datastore.GetEvent()
 	if err != nil {
@@ -116,7 +116,7 @@ func (e *eventSystem) Restart() {
 	go e.onPublish()
 }
 
-func (e *eventSystem) log(msg string) {
+func (e *EventSystem) log(msg string) {
 	if e.enableLog {
 		fmt.Println(msg)
 	}
