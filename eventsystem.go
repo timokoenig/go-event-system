@@ -28,13 +28,13 @@ func NewEventSystem(datastore Datastore, enableLog bool) *EventSystem {
 
 // Register new event handler
 func (e *EventSystem) Register(handler EventHandler) {
-	e.log(fmt.Sprintf("EventSystem.Register handler for %s\n", handler.Event))
+	e.log(fmt.Sprintf("EventSystem.Register handler for %s", handler.Event))
 	e.handlers = append(e.handlers, handler)
 }
 
 // Publish event with payload
 func (e *EventSystem) Publish(event string, payload interface{}) error {
-	e.log(fmt.Sprintf("EventSystem.Publish event for %s\n", event))
+	e.log(fmt.Sprintf("EventSystem.Publish event for %s", event))
 	err := e.datastore.SaveEvent(&Event{
 		ID:          "",
 		Name:        event,
@@ -105,7 +105,7 @@ func (e *EventSystem) Restart() {
 		return
 	}
 	if event != nil && event.Error != nil {
-		e.log(fmt.Sprintf("Try to restart failed event %s\n", event.Name))
+		e.log(fmt.Sprintf("Try to restart failed event %s", event.Name))
 		event.Error = nil
 		if err := e.datastore.SaveEvent(event); err != nil {
 			e.log(fmt.Sprintf("Failed to save event; %s", err.Error()))
